@@ -1,0 +1,8 @@
+FROM golang:latest
+COPY .. ./app
+RUN cd app && go build -o app ./cmd/app/app.go
+EXPOSE 8080
+CMD ["./app/app"]
+
+
+

@@ -1,0 +1,7 @@
+FROM golang:latest
+COPY .. ./proxy
+RUN cd proxy && go build -o proxy ./cmd/proxy/proxy.go
+EXPOSE 8081
+CMD ["./proxy/proxy"]
+
+
