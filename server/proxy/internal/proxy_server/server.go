@@ -1,6 +1,10 @@
 package proxyserver
 
-import "net"
+import (
+	"fmt"
+	"net"
+	"sync"
+)
 
 type ProxyServer struct {
 	inPort      string
@@ -20,17 +24,23 @@ func NewProxyServer(InPort, OutAdress string, complexity int, readTimeOut int, p
 	}
 }
 
-func (proxy ProxyServer) Run() error {
+func (proxy ProxyServer) Run() {
 	tcpServer, err := net.Listen("tcp", proxy.inPort)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		return
 	}
 	defer tcpServer.Close()
+	wg := &sync.WaitGroup{}
+	defer wg.Wait()
 	for {
 		conn, err := tcpServer.Accept()
 		if err != nil {
-			return err
+			fmt.Println(err)
+			return
 		}
-		go proxy.Handler(conn)
+		wg.Add(1)
+		go proxy.Handler(conn, wg)
 	}
+
 }

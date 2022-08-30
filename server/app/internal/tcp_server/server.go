@@ -1,7 +1,9 @@
 package tcpserver
 
 import (
+	"fmt"
 	"net"
+	"sync"
 )
 
 type Server struct {
@@ -16,19 +18,23 @@ func NewServer(port string, getContent GetContent) *Server {
 	}
 }
 
-func (server Server) Run() error {
+func (server Server) Run() {
 	tcpServer, err := net.Listen("tcp", server.port)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		return
 	}
 	defer tcpServer.Close()
+	wg := &sync.WaitGroup{}
+	defer wg.Wait()
 	for {
 		conn, err := tcpServer.Accept()
 		if err != nil {
-			return err
+			fmt.Println(err)
+			return
 		}
-		go server.handler(conn)
+		wg.Add(1)
+		go server.handler(conn, wg)
 
 	}
-	return nil
 }

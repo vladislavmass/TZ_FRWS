@@ -28,6 +28,7 @@ func main() {
 
 	proxy := proxyserver.NewProxyServer(inPort, outAddress, complexity, timeOut, pow)
 	proxy.Run()
+
 }
 
 func getEnv(key string, defaultVal string) string {

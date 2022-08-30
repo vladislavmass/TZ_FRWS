@@ -1,7 +1,10 @@
 package tcpserver
 
-import "net"
+import (
+	"net"
+	"sync"
+)
 
 type GetContent func() string
 
-type ExecutorHandler func(net.Conn)
+type ExecutorHandler func(net.Conn, *sync.WaitGroup)

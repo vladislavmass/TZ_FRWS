@@ -1,6 +1,9 @@
 package powservice
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type POWService struct {
 	work       string
@@ -13,11 +16,15 @@ func CreatePOWService(complexity int) *POWService {
 		complexity: complexity,
 	}
 }
-func (pow *POWService) GetWork() string {
+func (pow POWService) GetWork() string {
 	return fmt.Sprintf("%s:%d", pow.work, pow.complexity)
 }
 
-func (pow *POWService) ValidateWork(workRezult string) bool {
+func (pow POWService) ValidateWork(workRezult string) bool {
+	parsString := strings.Split(workRezult, ":")
+	if pow.work != parsString[0] {
+		return false
+	}
 	hash := getSha3Hash(workRezult)
 	for _, val := range hash[:pow.complexity] {
 		if val != '0' {

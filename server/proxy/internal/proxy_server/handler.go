@@ -6,14 +6,16 @@ import (
 	"io"
 	"net"
 	"strings"
+	"sync"
 	"time"
 )
 
-func (server ProxyServer) Handler(inConn net.Conn) {
+func (server ProxyServer) Handler(inConn net.Conn, wg *sync.WaitGroup) {
 	/*
 		I know that you need to close the connection in the same place where you opened it. But I don't know how to do this
 	*/
 	defer inConn.Close()
+	defer wg.Done()
 
 	//sending authorization information
 	fmt.Fprintln(inConn, server.POW.GetWork())
